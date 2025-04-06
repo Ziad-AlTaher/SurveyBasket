@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SurveyBasket.Presistence;
 using System.Threading.Tasks;
 
-namespace SurveyBasket.Services;
+namespace SurveyBasket.Services.Polls;
 
 public class PollService(ApplicationDbContext context) : IPollService
 {
