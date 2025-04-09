@@ -19,7 +19,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
+app.UseCors();
+app.UseExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();

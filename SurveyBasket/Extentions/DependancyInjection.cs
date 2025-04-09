@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.Authentication;
+using SurveyBasket.Errors;
 using SurveyBasket.Models;
 using SurveyBasket.Presistence;
 using SurveyBasket.Services;
@@ -24,6 +25,16 @@ public static class DependancyInjection
     {
         services.AddControllers();
 
+        services.AddCors(options =>
+            options.AddDefaultPolicy(builder =>
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!)
+            )
+        );
+
+
         var connectionString = configuration.GetConnectionString("DefaultConnection") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -36,6 +47,10 @@ public static class DependancyInjection
             .AddMapsterConf()
             .AddFluentValidationConf()
             .AddAuthConf(configuration);
+
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         services.AddScoped<IPollService, PollService>();
         services.AddScoped<IAuthService, AuthService>();

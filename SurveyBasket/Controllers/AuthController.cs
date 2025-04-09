@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SurveyBasket.Errors;
 using SurveyBasket.Services;
 using System.Threading.Tasks;
 
@@ -10,22 +12,29 @@ public class AuthController(IAuthService authService) : Controller
     [HttpPost("")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
 
-        return authResult is null ? BadRequest("Invalid email/password") : Ok(authResult);
+        var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
+        
+        return authResult.IsSuccess 
+            ? Ok(authResult) 
+            : authResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
     }
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
         var authResult = await _authService.GetRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
 
-        return authResult is null ? BadRequest("invalid refresh token") : Ok(authResult);
+        return authResult.IsSuccess
+            ? Ok(authResult)
+            : authResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
     }
     [HttpPost("revoke-refresh-token")]
     public async Task<IActionResult> RevokeRefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var isRevoked = await _authService.RevokeRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
+        var revokedResult = await _authService.RevokeRefreshTokenAsync(request.Token, request.RefreshToken, cancellationToken);
 
-        return isRevoked ? Ok() : BadRequest("invalid token");
+        return revokedResult.IsSuccess
+            ? Ok()
+            :revokedResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
     }
 }
