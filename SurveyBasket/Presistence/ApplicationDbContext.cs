@@ -42,5 +42,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     #region DbSets
     public DbSet<Poll> Polls { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<Answer> Answers { get; set; }
     #endregion
 }
