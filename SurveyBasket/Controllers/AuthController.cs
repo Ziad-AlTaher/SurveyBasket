@@ -17,7 +17,7 @@ public class AuthController(IAuthService authService) : Controller
         
         return authResult.IsSuccess 
             ? Ok(authResult) 
-            : authResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
+            : authResult.ToProblem();
     }
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ public class AuthController(IAuthService authService) : Controller
 
         return authResult.IsSuccess
             ? Ok(authResult)
-            : authResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
+            : authResult.ToProblem();
     }
     [HttpPost("revoke-refresh-token")]
     public async Task<IActionResult> RevokeRefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
@@ -35,6 +35,6 @@ public class AuthController(IAuthService authService) : Controller
 
         return revokedResult.IsSuccess
             ? Ok()
-            :revokedResult.ToProblem(statusCode: StatusCodes.Status401Unauthorized);
+            :revokedResult.ToProblem();
     }
 }
