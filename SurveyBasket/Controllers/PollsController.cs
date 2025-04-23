@@ -23,7 +23,6 @@ public class PollsController(IPollService pollService) : ControllerBase
 
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
 
         var polls = await _pollService.GetAllAsync(cancellationToken);
 
