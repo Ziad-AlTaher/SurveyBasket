@@ -13,6 +13,8 @@ using SurveyBasket.Models;
 using SurveyBasket.Presistence;
 using SurveyBasket.Services;
 using SurveyBasket.Services.Polls;
+using SurveyBasket.Services.Questions;
+using SurveyBasket.Services.Votes;
 using System.Reflection;
 using System.Text;
 namespace SurveyBasket.Extentions;
@@ -24,6 +26,8 @@ public static class DependancyInjection
     IConfiguration configuration)
     {
         services.AddControllers();
+
+        services.AddHybridCache();
 
         services.AddCors(options =>
             options.AddDefaultPolicy(builder =>
@@ -54,6 +58,9 @@ public static class DependancyInjection
 
         services.AddScoped<IPollService, PollService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IQuestionService, QuestionService>();
+        services.AddScoped<IResultService, ResultService>();
+        services.AddScoped<IVoteService, VoteService>();
 
         return services;
     }
